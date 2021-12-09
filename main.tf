@@ -88,9 +88,13 @@ data ibm_cos_bucket cos_bucket {
 # Teleport Instance
 ##############################################################################
 
+data ibm_is_image vsi_image {
+  name = var.image
+}
+
 resource ibm_is_instance teleport_vsi {
   name           = "${var.prefix}-teleport-vsi"
-  image          = var.image
+  image          = data.ibm_is_image.vsi_image.id
   profile        = var.profile
   resource_group = data.ibm_resource_group.resource_group.id
   vpc            = data.ibm_is_vpc.vpc.id
