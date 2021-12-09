@@ -48,12 +48,13 @@ data ibm_is_ssh_key ssh_key {
 ##############################################################################
 
 data ibm_resource_instance appid { 
-  name = var.appid_name
+  name              = var.appid_name
+  resource_group_id = data.ibm_resource_group.resource_group.id
 }
 
 data ibm_resource_key appid_resource_key {
   name                  = var.appid_resource_key_name
-  resource_instance_id  = data.ibm_is_instance.appid.id
+  resource_instance_id  = data.ibm_resource_instance.appid.id
 }
 
 ##############################################################################
@@ -64,18 +65,19 @@ data ibm_resource_key appid_resource_key {
 ##############################################################################
 
 data ibm_resource_instance cos { 
-  name = var.cos_name
+  name              = var.cos_name
+  resource_group_id = data.ibm_resource_group.resource_group.id
 }
 
 data ibm_resource_key cos_resource_key {
   name                  = var.cos_resource_key_name
-  resource_instance_id  = data.ibm_is_instance.cos.id
+  resource_instance_id  = data.ibm_resource_instance.cos.id
 }
 
 data ibm_cos_bucket cos_bucket {
   resource_instance_id = data.ibm_resource_instance.cos.id
-  name                 = var.cos_bucket.name
-  region               = var.cos_bucket.region == null ? var.region : var.cos_bucket.region
+  bucket_name          = var.cos_bucket.name
+  bucket_region        = var.cos_bucket.region == null ? var.region : var.cos_bucket.region
   bucket_type          = var.cos_bucket.bucket_type
 }
 
@@ -90,7 +92,7 @@ resource ibm_is_instance teleport_vsi {
   name           = "${var.prefix}-teleport-vsi"
   image          = var.image
   profile        = var.profile
-  resource_group = data.ibm_resource_group.rg.id
+  resource_group = data.ibm_resource_group.resource_group.id
   vpc            = data.ibm_is_vpc.vpc.id
   zone           = data.ibm_is_subnet.subnet.zone
   user_data      = data.template_cloudinit_config.cloud_init.rendered # From templates.tf

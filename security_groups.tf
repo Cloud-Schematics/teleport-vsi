@@ -98,7 +98,7 @@ locals {
 
 resource ibm_is_security_group teleport_security_group {
     name = "${var.prefix}-teleport-security-group"
-    vpc  = data.imb_is_vpc.vpc.id
+    vpc  = data.ibm_is_vpc.vpc.id
 }
 
 resource ibm_is_security_group_rule vsi_security_group_rules {
@@ -108,7 +108,7 @@ resource ibm_is_security_group_rule vsi_security_group_rules {
   remote    = lookup(each.value, "remote", null)
 
   dynamic tcp { 
-    for_each = each.value.tcp == null ? [] : [each.value]
+    for_each = lookup(each.value, "tcp", null) == null ? [] : [each.value]
     content {
       port_min = each.value.tcp.port_min
       port_max = each.value.tcp.port_max
@@ -116,7 +116,7 @@ resource ibm_is_security_group_rule vsi_security_group_rules {
   }
 
   dynamic udp { 
-    for_each = each.value.udp == null ? [] : [each.value]
+    for_each = lookup(each.value, "udp", null) == null ? [] : [each.value]
     content {
       port_min = each.value.udp.port_min
       port_max = each.value.udp.port_max
@@ -124,7 +124,7 @@ resource ibm_is_security_group_rule vsi_security_group_rules {
   } 
 
   dynamic icmp { 
-    for_each = each.value.icmp == null ? [] : [each.value]
+    for_each = lookup(each.value, "icmp", null) == null ? [] : [each.value]
     content {
       type = each.value.icmp.type
       code = each.value.icmp.code
